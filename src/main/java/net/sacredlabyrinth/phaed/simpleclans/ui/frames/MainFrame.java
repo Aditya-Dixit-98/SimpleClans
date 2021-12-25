@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
-import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.StaffFrame;
@@ -25,9 +24,9 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public void createComponents() {
-		add(Components.getPlayerComponent(this, getViewer(), getViewer(), 0, false));
+		add(Components.getPlayerComponent(this, getViewer(), getViewer(), 0, false)); // TODO
 		add(Components.getClanComponent(this, getViewer(),
-				plugin.getClanManager().getCreateClanPlayer(getViewer().getUniqueId()).getClan(), 1, true));
+				plugin.getClanManager().getCreateClanPlayer(getViewer().getUniqueId()).getClan(), 1, true)); // TODO
 		addLeaderboard();
 		addClanList();
 		addResetKdr();
@@ -37,34 +36,36 @@ public class MainFrame extends SCFrame {
 	}
 
 	private void addOtherCommands() {
-		SCComponent otherCommands = new SCComponentImpl(lang("gui.main.other.commands.title",getViewer()),
-				Collections.singletonList(lang("gui.main.other.commands.lore",getViewer())), XMaterial.BOOK, 8);
+		SCComponent otherCommands = getComponentFromConfig("other_commands",
+				lang("gui.main.other.commands.title", getViewer()), lang("gui.main.other.commands.lore", getViewer()));
 		otherCommands.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "help", false));
 		add(otherCommands);
 	}
 
 	private void addStaff() {
 		if (plugin.getPermissionsManager().has(getViewer(), "simpleclans.mod.staffgui")) {
-			SCComponent staff = new SCComponentImpl.Builder(XMaterial.COMMAND_BLOCK).withSlot(6).withDisplayName(
-					lang("gui.main.staff.title", getViewer())).withLore(Collections.singletonList(lang("gui.main.staff.lore", getViewer()))).build();
+			SCComponent staff = getComponentFromConfig("staff", lang("gui.main.staff.title", getViewer()),
+					lang("gui.main.staff.lore", getViewer()));
 			staff.setPermission(ClickType.LEFT, "simpleclans.mod.staffgui");
 			staff.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new StaffFrame(this, getViewer())));
 			add(staff);
+
 		}
 	}
 
 	private void addLeaderboard() {
-		SCComponent leaderboard = new SCComponentImpl(lang("gui.main.leaderboard.title",getViewer()),
-				Collections.singletonList(lang("gui.main.leaderboard.lore",getViewer())), XMaterial.PAINTING, 3);
-		leaderboard.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new LeaderboardFrame(getViewer(), this)));
+		SCComponent leaderboard = getComponentFromConfig("leaderboard", lang("gui.main.leaderboard.title", getViewer()),
+				lang("gui.main.leaderboard.lore", getViewer()));
+		leaderboard.setListener(ClickType.LEFT,
+				() -> InventoryDrawer.open(new LeaderboardFrame(getViewer(), this)));
 		leaderboard.setPermission(ClickType.LEFT, "simpleclans.anyone.leaderboard");
 		add(leaderboard);
+
 	}
 
 	private void addClanList() {
-		SCComponent clanList = new SCComponentImpl(lang("gui.main.clan.list.title", getViewer()),
-				Collections.singletonList(lang("gui.main.clan.list.lore", getViewer())), XMaterial.PURPLE_BANNER,
-				4);
+		SCComponent clanList = getComponentFromConfig("clan_list", lang("gui.main.clan.list.title", getViewer()),
+				lang("gui.main.clan.list.lore", getViewer()));
 		clanList.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanListFrame(this, getViewer())));
 		clanList.setPermission(ClickType.LEFT, "simpleclans.anyone.list");
 		add(clanList);
@@ -72,10 +73,10 @@ public class MainFrame extends SCFrame {
 
 	private void addLanguageSelector() {
 		if (plugin.getSettingsManager().is(LANGUAGE_SELECTOR)) {
-			SCComponent language = new SCComponentImpl.Builder(XMaterial.MAP)
-					.withDisplayName(lang("gui.main.languageselector.title", getViewer()))
-					.withSlot(7).withLore(Arrays.asList(lang("gui.main.languageselector.lore.left.click", getViewer())
-					, lang("gui.main.languageselector.lore.right.click", getViewer()))).build();
+			List<String> lore = Arrays.asList(lang("gui.main.languageselector.lore.left.click", getViewer()),
+					lang("gui.main.languageselector.lore.right.click", getViewer()));
+			SCComponent language = getComponentFromConfig("language_selector",
+					lang("gui.main.languageselector.title", getViewer()), lore);
 			language.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new LanguageSelectorFrame(this, getViewer())));
 			language.setListener(ClickType.RIGHT, () -> {
 				getViewer().sendMessage(lang("click.to.help.translating", getViewer(),
@@ -87,17 +88,15 @@ public class MainFrame extends SCFrame {
 	}
 
 	public void addResetKdr() {
-		List<String> resetKrLore;
+		List<String> lore;
 		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR)) {
-			resetKrLore = Arrays.asList(
+			lore = Arrays.asList(
 					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().getString(ECONOMY_RESET_KDR_PRICE)),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
-			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
+			lore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
 		}
-		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title", getViewer()),
-				resetKrLore, XMaterial.ANVIL, 5);
-		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
+		SCComponent resetKdr = getComponentFromConfig("reset_kdr", lang("gui.main.reset.kdr.title", getViewer()), lore);
 		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.vip.resetkdr");
 		add(resetKdr);
@@ -106,11 +105,6 @@ public class MainFrame extends SCFrame {
 	@Override
 	public @NotNull String getTitle() {
 		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getColored(SERVER_NAME));
-	}
-
-	@Override
-	public int getSize() {
-		return 9;
 	}
 
 }

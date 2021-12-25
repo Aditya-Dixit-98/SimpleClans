@@ -1,0 +1,28 @@
+size: 9
+components:
+  player:
+  clan:
+  leaderboard:
+    enabled: true
+    slot: 3
+    material: PAINTING
+  clan_list:
+    enabled: true
+    slot: 4
+    material: PURPLE_BANNER
+  reset_kdr:
+    enabled: true
+    slot: 5
+    material: ANVIL
+  staff:
+    enabled: true
+    slot: 6
+    material: COMMAND_BLOCK
+  language_selector:
+    enabled: true
+    slot: 7
+    material: MAP
+  other_commands:
+    enabled: true
+    slot: 8
+    material: BOOK
